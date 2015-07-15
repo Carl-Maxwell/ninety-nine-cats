@@ -1,0 +1,92 @@
+<%
+if @cat.persisted?
+  action = cat_url(@cat)
+  hidden = true
+  submit_text = "Update Cat"
+else
+  action = cats_url
+  hidden = false
+  submit_text = "Create Cat"
+end
+%>
+
+
+
+<% @cat.errors.full_messages.each do |message| %>
+  <%= message %>
+<% end %>
+
+<form action="<%= action %>" method="POST" class="form-horizontal">
+  <fieldset>
+
+    <legend><%= submit_text %></legend>
+    
+    <% if hidden %>
+      <input type="hidden" name="_method" value="PATCH">
+    <% end %>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="cat_name">Name</label>
+      <div class="controls">
+        <input id="cat_name" name="cat[name]" class="col-sm-2" type="text" class="input-xlarge" value="<%= @cat.name %>">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="radios">Sex</label>
+      <div class="controls">
+        <% Cat::SEXES.each_with_index do |sex, i|%>
+          <label for="radios-<%= i %>">
+            <%= sex %>
+            <input type="radio"
+              name="cat[sex]"
+              id="radios-<%= i %>"
+              value="<%= sex %>"
+              <%= 'checked' if @cat.sex == sex %>
+            >
+          </label>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="cat_color">Color</label>
+        <select class="col-sm-2" name='cat[color]' id="cat_color">
+          <option></option>
+          <% Cat::COLORS.each do |color| %>
+            <option value='<%= color %>' <%= 'selected' if @cat.color == color %>>
+              <%= color %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Date</label>
+        <input type="date" class="col-sm-2" name='cat[birth_date]' value="<%= @cat.birth_date%>">
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="cat_description">Description</label>
+        <div class="col-sm-2 controls">
+          <textarea
+            class='form-control'
+            rows='2'
+            name='cat[description]'
+            id="cat_description"
+            >
+            <%= @cat.description %>
+          </textarea>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="col-sm-2"></div>
+      <input class="col-sm-2" type="submit" value="<%= submit_text %>" >
+
+    </div>
+
+
+  </fieldset>
+</form>
